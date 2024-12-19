@@ -96,20 +96,25 @@ class _TodoListScreenState extends State<TodoListScreen> {
 
   // Build a single task item
   Widget _buildTodoItem(Map<String, dynamic> taskData, int index) {
+    bool isCompleted = taskData['isCompleted'] ?? false;
+
     return Card(
+      color: Colors.grey,
       child: ListTile(
         leading: Checkbox(
-          value: taskData['isCompleted'],
+          value: isCompleted,
           onChanged: (bool? value) {
-            _toggleTaskCompletion(index);
+            if (value != null) {
+              _toggleTaskCompletion(index);
+            }
           },
         ),
         title: Text(
           taskData['task'],
           style: TextStyle(
-            decoration: taskData['isCompleted']
-                ? TextDecoration.lineThrough
-                : TextDecoration.none,
+            fontWeight: isCompleted ? FontWeight.normal : FontWeight.bold,
+            decoration:
+                isCompleted ? TextDecoration.lineThrough : TextDecoration.none,
           ),
         ),
         trailing: Row(
@@ -120,7 +125,10 @@ class _TodoListScreenState extends State<TodoListScreen> {
               onPressed: () => _showEditDialog(index),
             ),
             IconButton(
-              icon: Icon(Icons.delete, color: Colors.red),
+              icon: Icon(Icons.delete,
+                  color: isCompleted
+                      ? Colors.red
+                      : const Color.fromARGB(255, 0, 0, 0)),
               onPressed: () => _removeTodoItem(index),
             ),
           ],
@@ -132,42 +140,61 @@ class _TodoListScreenState extends State<TodoListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       appBar: AppBar(
-        title: Text("To-Do List"),
-        backgroundColor: Colors.blueAccent,
+        centerTitle: true,
+        title: Text(
+          "To-Do List",
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        backgroundColor: const Color.fromARGB(255, 58, 154, 183),
       ),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    controller: _controller,
-                    decoration: InputDecoration(
-                      labelText: 'Add a task',
-                      border: OutlineInputBorder(),
-                    ),
-                  ),
-                ),
-                SizedBox(width: 8),
-                ElevatedButton(
-                  onPressed: () => _addTodoItem(_controller.text),
-                  child: Text("Add"),
-                ),
-              ],
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          children: [
+            Container(
+              decoration: BoxDecoration(
+                  color: Colors.deepPurpleAccent,
+                  borderRadius: BorderRadius.all(Radius.circular(15.0))),
+              // color: const Color.fromARGB(255, 158, 91, 91),
+              height: 200.0,
+              width: MediaQuery.sizeOf(context).width,
             ),
-          ),
-          Expanded(
-            child: ListView.builder(
-              itemCount: _todoItems.length,
-              itemBuilder: (context, index) {
-                return _buildTodoItem(_todoItems[index], index);
-              },
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Expanded(
+                child: ListView.builder(
+                  itemCount: _todoItems.length,
+                  itemBuilder: (context, index) {
+                    return _buildTodoItem(_todoItems[index], index);
+                  },
+                ),
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
+      ),
+      bottomSheet: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Row(
+          children: [
+            Expanded(
+              child: TextField(
+                controller: _controller,
+                decoration: InputDecoration(
+                  labelText: 'Add a task',
+                  border: OutlineInputBorder(),
+                ),
+              ),
+            ),
+            SizedBox(width: 8),
+            ElevatedButton(
+              onPressed: () => _addTodoItem(_controller.text),
+              child: Text("Add"),
+            ),
+          ],
+        ),
       ),
     );
   }
