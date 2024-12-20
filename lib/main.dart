@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:to_do_list/login_screen.dart';
 
 void main() {
   runApp(MyApp());
@@ -9,12 +10,16 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: TodoListScreen(),
+      home: LoginScreen(),
     );
   }
 }
 
 class TodoListScreen extends StatefulWidget {
+  final String userName;
+
+  TodoListScreen({super.key, required this.userName});
+
   @override
   _TodoListScreenState createState() => _TodoListScreenState();
 }
@@ -99,7 +104,8 @@ class _TodoListScreenState extends State<TodoListScreen> {
     bool isCompleted = taskData['isCompleted'] ?? false;
 
     return Card(
-      color: Colors.grey,
+      elevation: 5.0,
+      color: const Color.fromARGB(149, 149, 149, 149),
       child: ListTile(
         leading: Checkbox(
           value: isCompleted,
@@ -112,6 +118,7 @@ class _TodoListScreenState extends State<TodoListScreen> {
         title: Text(
           taskData['task'],
           style: TextStyle(
+            color: Colors.white,
             fontWeight: isCompleted ? FontWeight.normal : FontWeight.bold,
             decoration:
                 isCompleted ? TextDecoration.lineThrough : TextDecoration.none,
@@ -128,7 +135,7 @@ class _TodoListScreenState extends State<TodoListScreen> {
               icon: Icon(Icons.delete,
                   color: isCompleted
                       ? Colors.red
-                      : const Color.fromARGB(255, 0, 0, 0)),
+                      : const Color.fromARGB(255, 255, 255, 255)),
               onPressed: () => _removeTodoItem(index),
             ),
           ],
@@ -143,41 +150,67 @@ class _TodoListScreenState extends State<TodoListScreen> {
       resizeToAvoidBottomInset: true,
       appBar: AppBar(
         centerTitle: true,
+        leading: IconButton(
+            onPressed: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute<void>(
+                    builder: (BuildContext context) => LoginScreen(),
+                  ));
+            },
+            icon: Icon(
+              Icons.arrow_back,
+              color: Colors.white,
+            )),
         title: Text(
           "To-Do List",
-          style: TextStyle(fontWeight: FontWeight.bold),
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
-        backgroundColor: const Color.fromARGB(255, 58, 154, 183),
+        backgroundColor: const Color.fromARGB(225, 27, 7, 49),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          children: [
-            Container(
-              decoration: BoxDecoration(
-                  color: Colors.deepPurpleAccent,
-                  borderRadius: BorderRadius.all(Radius.circular(15.0))),
-              // color: const Color.fromARGB(255, 158, 91, 91),
-              height: 200.0,
-              width: MediaQuery.sizeOf(context).width,
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Expanded(
-                child: ListView.builder(
-                  itemCount: _todoItems.length,
-                  itemBuilder: (context, index) {
-                    return _buildTodoItem(_todoItems[index], index);
-                  },
+      body: Container(
+        decoration: BoxDecoration(
+            image: DecorationImage(
+                image: AssetImage("assets/images/ToDoback.jpg"),
+                fit: BoxFit.cover)),
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            children: [
+              Container(
+                decoration: BoxDecoration(
+                    color: const Color.fromARGB(50, 0, 0, 0),
+                    borderRadius: BorderRadius.all(Radius.circular(15.0))),
+                // color: const Color.fromARGB(255, 158, 91, 91),
+                height: 200.0,
+                width: MediaQuery.sizeOf(context).width,
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 30, left: 30),
+                  child: Text(
+                    "weclome, ${widget.userName}",
+                    style: TextStyle(fontSize: 30.0, color: Colors.white),
+                  ),
                 ),
               ),
-            ),
-          ],
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 10),
+                  child: ListView.builder(
+                    itemCount: _todoItems.length,
+                    itemBuilder: (context, index) {
+                      return _buildTodoItem(_todoItems[index], index);
+                    },
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
       bottomSheet: Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.all(15.0),
         child: Row(
+          spacing: 18.0,
           children: [
             Expanded(
               child: TextField(
@@ -188,7 +221,6 @@ class _TodoListScreenState extends State<TodoListScreen> {
                 ),
               ),
             ),
-            SizedBox(width: 8),
             ElevatedButton(
               onPressed: () => _addTodoItem(_controller.text),
               child: Text("Add"),
