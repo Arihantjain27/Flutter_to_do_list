@@ -146,86 +146,97 @@ class _TodoListScreenState extends State<TodoListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomInset: true,
-      appBar: AppBar(
-        centerTitle: true,
-        leading: IconButton(
-            onPressed: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute<void>(
-                    builder: (BuildContext context) => LoginScreen(),
-                  ));
-            },
-            icon: Icon(
-              Icons.arrow_back,
-              color: Colors.white,
-            )),
-        title: Text(
-          "To-Do List",
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+    return Container(decoration: BoxDecoration(
+      gradient: LinearGradient(begin: Alignment.topLeft,end: Alignment.bottomRight,colors: [Colors.orange.shade600,Colors.orange.shade400,Colors.orange.shade200,Colors.blue.shade200,Colors.blue.shade400,Colors.blue.shade600])
+    ),
+      child: Scaffold(
+        resizeToAvoidBottomInset: true,
+        appBar: AppBar(
+          centerTitle: true,
+          leading: IconButton(
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute<void>(
+                      builder: (BuildContext context) => LoginScreen(),
+                    ));
+              },
+              icon: Icon(
+                Icons.arrow_back,
+                color: Colors.white,
+              )),
+          title: Text(
+            "To-Do List",
+            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          ),
+          backgroundColor: const Color.fromARGB(225, 27, 7, 49),
         ),
-        backgroundColor: const Color.fromARGB(225, 27, 7, 49),
-      ),
-      body: Container(
-        decoration: BoxDecoration(
-            image: DecorationImage(
-                image: AssetImage("assets/images/ToDoback.jpg"),
-                fit: BoxFit.cover)),
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
+        body: Container(
+          decoration: BoxDecoration(gradient: LinearGradient(begin: Alignment.topLeft,end: Alignment.bottomRight,colors: [
+      Colors.blue.shade600,
+      Colors.blue.shade400,
+        // Colors.blue.shade200,
+      Colors.blue.shade200,
+      Colors.blue.shade400,
+      Colors.blue.shade600])
+              // image: DecorationImage(
+              //     image: AssetImage("assets/images/ToDoback.jpg"),
+              //     fit: BoxFit.cover)
+                  ),
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                      color: const Color.fromARGB(50, 0, 0, 0),
+                      borderRadius: BorderRadius.all(Radius.circular(15.0))),
+                  // color: const Color.fromARGB(255, 158, 91, 91),
+                  height: 200.0,
+                  width: MediaQuery.sizeOf(context).width,
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 30, left: 30),
+                    child: Text(
+                      "weclome, ${widget.userName}",
+                      style: TextStyle(fontSize: 30.0, color: Colors.white),
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 10),
+                    child: ListView.builder(
+                      itemCount: _todoItems.length,
+                      itemBuilder: (context, index) {
+                        return _buildTodoItem(_todoItems[index], index);
+                      },
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+        bottomSheet: Padding(
+          padding: const EdgeInsets.all(15.0),
+          child: Row(
+            spacing: 18.0,
             children: [
-              Container(
-                decoration: BoxDecoration(
-                    color: const Color.fromARGB(50, 0, 0, 0),
-                    borderRadius: BorderRadius.all(Radius.circular(15.0))),
-                // color: const Color.fromARGB(255, 158, 91, 91),
-                height: 200.0,
-                width: MediaQuery.sizeOf(context).width,
-                child: Padding(
-                  padding: const EdgeInsets.only(top: 30, left: 30),
-                  child: Text(
-                    "weclome, ${widget.userName}",
-                    style: TextStyle(fontSize: 30.0, color: Colors.white),
+              Expanded(
+                child: TextField(
+                  controller: _controller,
+                  decoration: InputDecoration(
+                    labelText: 'Add a task',
+                    border: OutlineInputBorder(),
                   ),
                 ),
               ),
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.only(top: 10),
-                  child: ListView.builder(
-                    itemCount: _todoItems.length,
-                    itemBuilder: (context, index) {
-                      return _buildTodoItem(_todoItems[index], index);
-                    },
-                  ),
-                ),
+              ElevatedButton(
+                onPressed: () => _addTodoItem(_controller.text),
+                child: Text("Add"),
               ),
             ],
           ),
-        ),
-      ),
-      bottomSheet: Padding(
-        padding: const EdgeInsets.all(15.0),
-        child: Row(
-          spacing: 18.0,
-          children: [
-            Expanded(
-              child: TextField(
-                controller: _controller,
-                decoration: InputDecoration(
-                  labelText: 'Add a task',
-                  border: OutlineInputBorder(),
-                ),
-              ),
-            ),
-            ElevatedButton(
-              onPressed: () => _addTodoItem(_controller.text),
-              child: Text("Add"),
-            ),
-          ],
         ),
       ),
     );

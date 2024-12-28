@@ -22,10 +22,17 @@ class LoginScreen extends StatelessWidget {
           Opacity(
             opacity: 0.8,
             child: Container(
-              decoration: BoxDecoration(
-                  image: DecorationImage(
-                      image: AssetImage("assets/images/ToDoback.jpg"),
-                      fit: BoxFit.cover)),
+              decoration: BoxDecoration(gradient: LinearGradient(begin: Alignment.topLeft,end: Alignment.bottomRight,colors: [
+        Colors.orange.shade600,
+      Colors.orange.shade400,
+      Colors.orange.shade200,
+      Colors.blue.shade200,
+      Colors.blue.shade400,
+      Colors.blue.shade600])
+                  // image: DecorationImage(
+                  //     image: AssetImage("assets/images/ToDoback.jpg"),
+                  //     fit: BoxFit.cover)
+                  ),
             ),
           ),
           Center(
