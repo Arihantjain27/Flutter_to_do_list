@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+
 import 'package:to_do_list/login_screen.dart';
 
 void main() {
@@ -15,6 +18,14 @@ class MyApp extends StatelessWidget {
   }
 }
 
+class Dummy{
+     final String name;
+
+      const Dummy({
+        required this.name,
+      });
+    }
+
 class TodoListScreen extends StatefulWidget {
   final String userName;
 
@@ -28,6 +39,20 @@ class _TodoListScreenState extends State<TodoListScreen> {
   final List<Map<String, dynamic>> _todoItems =
       []; // List to hold tasks and their completion status
   final TextEditingController _controller = TextEditingController();
+
+
+   
+
+
+
+  
+
+  @override
+  void initState() {
+    super.initState();
+   
+
+  }
 
   // Add a new task
   void _addTodoItem(String task) {
@@ -105,9 +130,12 @@ class _TodoListScreenState extends State<TodoListScreen> {
 
     return Card(
       elevation: 5.0,
-      color: const Color.fromARGB(149, 149, 149, 149),
+      color: Colors.black,
       child: ListTile(
         leading: Checkbox(
+
+          checkColor: Colors.black,
+        fillColor: WidgetStatePropertyAll(Colors.white),
           value: isCompleted,
           onChanged: (bool? value) {
             if (value != null) {
@@ -155,11 +183,8 @@ class _TodoListScreenState extends State<TodoListScreen> {
           centerTitle: true,
           leading: IconButton(
               onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute<void>(
-                      builder: (BuildContext context) => LoginScreen(),
-                    ));
+                Navigator.pop(
+                    context);
               },
               icon: Icon(
                 Icons.arrow_back,
@@ -169,7 +194,7 @@ class _TodoListScreenState extends State<TodoListScreen> {
             "To-Do List",
             style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
           ),
-          backgroundColor: const Color.fromARGB(225, 27, 7, 49),
+          backgroundColor: const Color.fromARGB(223, 15, 77, 145),
         ),
         body: Container(
           decoration: BoxDecoration(gradient: LinearGradient(begin: Alignment.topLeft,end: Alignment.bottomRight,colors: [
@@ -226,14 +251,17 @@ class _TodoListScreenState extends State<TodoListScreen> {
                 child: TextField(
                   controller: _controller,
                   decoration: InputDecoration(
-                    labelText: 'Add a task',
+                    labelText: 'Add a task',labelStyle: TextStyle(color: Colors.blue.shade900),
                     border: OutlineInputBorder(),
+                    focusedBorder: OutlineInputBorder(
+      borderSide: BorderSide(color: Colors.blue.shade900, width: 2.0), // When focused
+    ),
                   ),
                 ),
               ),
               ElevatedButton(
                 onPressed: () => _addTodoItem(_controller.text),
-                child: Text("Add"),
+                child: Text("Add",style: TextStyle(color: Colors.blue.shade900),),
               ),
             ],
           ),
@@ -242,3 +270,5 @@ class _TodoListScreenState extends State<TodoListScreen> {
     );
   }
 }
+
+

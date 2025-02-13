@@ -15,7 +15,7 @@ class LoginScreen extends StatelessWidget {
           "Welcome",
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
-        backgroundColor: const Color.fromARGB(225, 27, 7, 49),
+        backgroundColor: const Color.fromARGB(223, 15, 77, 145),
       ),
       body: Stack(
         children: [
@@ -23,9 +23,9 @@ class LoginScreen extends StatelessWidget {
             opacity: 0.8,
             child: Container(
               decoration: BoxDecoration(gradient: LinearGradient(begin: Alignment.topLeft,end: Alignment.bottomRight,colors: [
-        Colors.orange.shade600,
-      Colors.orange.shade400,
-      Colors.orange.shade200,
+      Colors.blue.shade600,
+      Colors.blue.shade400,
+        // Colors.blue.shade200,
       Colors.blue.shade200,
       Colors.blue.shade400,
       Colors.blue.shade600])
