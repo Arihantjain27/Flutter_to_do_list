@@ -18,13 +18,6 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class Dummy{
-     final String name;
-
-      const Dummy({
-        required this.name,
-      });
-    }
 
 class TodoListScreen extends StatefulWidget {
   final String userName;
@@ -40,18 +33,32 @@ class _TodoListScreenState extends State<TodoListScreen> {
       []; // List to hold tasks and their completion status
   final TextEditingController _controller = TextEditingController();
 
-
-   
-
-
-
-  
-
   @override
   void initState() {
     super.initState();
-   
+    _loadTodoItems();
+  }
 
+    Future<void> _loadTodoItems() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    List<String>? savedItems = prefs.getStringList('todoItems');
+
+    if (savedItems != null) {
+      setState(() {
+        // Populate _todoItems with saved tasks
+        _todoItems.clear();
+        _todoItems.addAll(savedItems.map((task) {
+          return {'task': task, 'isCompleted': false}; // Assuming all tasks are initially incomplete
+        }));
+      });
+    }
+  }
+
+// Save the to-do items to SharedPreferences
+    Future<void> _saveTodoItems() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    List<String> savedItems = _todoItems.map((item) => item['task'] as String).toList(); // Convert to list of strings
+    await prefs.setStringList('todoItems', savedItems); // Save the list to SharedPreferences
   }
 
   // Add a new task
@@ -60,6 +67,7 @@ class _TodoListScreenState extends State<TodoListScreen> {
       setState(() {
         _todoItems.add({'task': task, 'isCompleted': false});
       });
+      _saveTodoItems();
       _controller.clear();
     }
   }
@@ -69,6 +77,7 @@ class _TodoListScreenState extends State<TodoListScreen> {
     setState(() {
       _todoItems.removeAt(index);
     });
+    _saveTodoItems();
   }
 
   // Toggle task completion
@@ -76,6 +85,7 @@ class _TodoListScreenState extends State<TodoListScreen> {
     setState(() {
       _todoItems[index]['isCompleted'] = !_todoItems[index]['isCompleted'];
     });
+    _saveTodoItems();
   }
 
   // Edit a task
@@ -84,6 +94,7 @@ class _TodoListScreenState extends State<TodoListScreen> {
       setState(() {
         _todoItems[index]['task'] = newTask;
       });
+      _saveTodoItems();
     }
   }
 
@@ -100,23 +111,26 @@ class _TodoListScreenState extends State<TodoListScreen> {
           content: TextField(
             controller: editController,
             decoration: InputDecoration(
-              labelText: 'Task',
-              border: OutlineInputBorder(),
-            ),
+                    labelText: 'Task',labelStyle: TextStyle(color: Colors.blue.shade900),
+                    border: OutlineInputBorder(),
+                    focusedBorder: OutlineInputBorder(
+      borderSide: BorderSide(color: Colors.blue.shade900, width: 2.0), // When focused
+    ),
+                  ),
           ),
           actions: [
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text("Cancel"),
+              child: Text("Cancel",style: TextStyle(color: Colors.blue.shade900),),
             ),
             ElevatedButton(
               onPressed: () {
                 _editTodoItem(index, editController.text);
                 Navigator.of(context).pop();
               },
-              child: Text("Save"),
+              child: Text("Save",style: TextStyle(color: Colors.blue.shade900)),
             ),
           ],
         );
@@ -129,8 +143,8 @@ class _TodoListScreenState extends State<TodoListScreen> {
     bool isCompleted = taskData['isCompleted'] ?? false;
 
     return Card(
-      elevation: 5.0,
-      color: Colors.black,
+      elevation: 2.0,
+      color: const Color.fromARGB(118, 0, 0, 0),
       child: ListTile(
         leading: Checkbox(
 
@@ -145,7 +159,7 @@ class _TodoListScreenState extends State<TodoListScreen> {
         ),
         title: Text(
           taskData['task'],
-          style: TextStyle(
+          style: TextStyle(fontSize: 19,
             color: Colors.white,
             fontWeight: isCompleted ? FontWeight.normal : FontWeight.bold,
             decoration:
@@ -178,18 +192,19 @@ class _TodoListScreenState extends State<TodoListScreen> {
       gradient: LinearGradient(begin: Alignment.topLeft,end: Alignment.bottomRight,colors: [Colors.orange.shade600,Colors.orange.shade400,Colors.orange.shade200,Colors.blue.shade200,Colors.blue.shade400,Colors.blue.shade600])
     ),
       child: Scaffold(
+        
         resizeToAvoidBottomInset: true,
         appBar: AppBar(
           centerTitle: true,
-          leading: IconButton(
-              onPressed: () {
-                Navigator.pop(
-                    context);
-              },
-              icon: Icon(
-                Icons.arrow_back,
-                color: Colors.white,
-              )),
+          // leading: IconButton(
+          //     onPressed: () {
+          //       Navigator.pop(
+          //           context);
+          //     },
+          //     icon: Icon(
+          //       Icons.arrow_back,
+          //       color: Colors.white,
+          //     )),
           title: Text(
             "To-Do List",
             style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
@@ -229,7 +244,7 @@ class _TodoListScreenState extends State<TodoListScreen> {
                 ),
                 Expanded(
                   child: Padding(
-                    padding: const EdgeInsets.only(top: 10),
+                    padding: const EdgeInsets.only(top: 10,bottom: 78),
                     child: ListView.builder(
                       itemCount: _todoItems.length,
                       itemBuilder: (context, index) {
@@ -260,7 +275,9 @@ class _TodoListScreenState extends State<TodoListScreen> {
                 ),
               ),
               ElevatedButton(
-                onPressed: () => _addTodoItem(_controller.text),
+                onPressed: () {_addTodoItem(_controller.text);
+                FocusScope.of(context).unfocus();
+                },
                 child: Text("Add",style: TextStyle(color: Colors.blue.shade900),),
               ),
             ],
